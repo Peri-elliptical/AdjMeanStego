@@ -296,6 +296,12 @@ def index():
 
 @app.route('/embed', methods=['POST'])
 def embed():
+    image = request.files['input_image']  # the uploaded image file
+    message = request.form['message']      # the text message
+
+    print(image.filename)  # e.g. "photo.png"
+    print(message)         # e.g. "Hello World"
+
     return jsonify({"status": "success"})
 
 @app.route('/extract', methods=['POST'])
