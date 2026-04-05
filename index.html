@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html>
     <head>
         <meta charset="UTF-8">
@@ -7,14 +6,16 @@
     </head> 
     <body>
         <h1 style="text-align: center;">Adjacent Mean Steganography</h1>
-        <form action="Input.js" method="post" enctype="multipart/form-data">
-            <label for="input_image">Enter the Cover Image:</label>
-            <input type="file" id="input_image" name="input_image" required><br><br>
-            
-            <label for="message">Message to Hide:</label><br>
-            <textarea id="message" name="message" rows="4" cols="50" required></textarea><br><br>
-            
-            <input type="submit" value="Embed Message">
-        </form>
+
+        <label for="input_image">Enter the Cover Image:</label>
+        <input type="file" id="input_image" name="input_image" required><br><br>
+        
+        <label for="message">Message to Hide:</label><br>
+        <textarea id="message" name="message" rows="4" cols="50" required></textarea><br><br>
+        
+        <button onclick="submitForm()">Embed Message</button>
+        <p id="output"></p>
+
+        <script src="script.js"></script> 
     </body>
 </html>

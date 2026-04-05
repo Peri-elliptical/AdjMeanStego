@@ -1,12 +1,13 @@
 async function submitForm() {
-    const input = document.getElementById('input_image').value;
+    const formData = new FormData();
+    formData.append('input_image', document.getElementById('input_image').files[0]);
+    formData.append('message', document.getElementById('message').value);
 
-    const response = await fetch('/process', {
+    const response = await fetch('/embed', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ input: input })
+        body: formData
     });
 
     const result = await response.json();
-    document.getElementById('output').innerText = result.output;
+    document.getElementById('output').innerText = result.status;
 }
