@@ -1,2 +1,4 @@
 numpy == 2.3.5
 pillow == 11.3.0
+flask
+gunicorn

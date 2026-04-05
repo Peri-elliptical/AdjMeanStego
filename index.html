@@ -7,14 +7,14 @@
     </head> 
     <body>
         <h1 style="text-align: center;">Adjacent Mean Steganography</h1>
-        <form action="AdjMeanStego.py" method="post" enctype="image/*">
-            <label for="input_image">Input Image:</label>
-            <input type="file" id="input_image" name="input_image" accept=".bmp,.png,.jpg,.jpeg" required><br><br>
+        <form action="AdjMeanStego.py" method="post" enctype="multipart/form-data">
+            <label for="input_image">Enter the Cover Image:</label>
+            <input type="file" id="input_image" name="input_image" required><br><br>
             
             <label for="message">Message to Hide:</label><br>
             <textarea id="message" name="message" rows="4" cols="50" required></textarea><br><br>
             
-            <input type="submit" value="Hide Message">
+            <input type="submit" value="Embed Message">
         </form>
     </body>
 </html>
