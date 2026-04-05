@@ -1,7 +1,9 @@
 import numpy as np
 import math
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, app, request, jsonify, render_template
 from PIL import Image
+
+app = Flask(__name__)
 
 def Embed_Image(Cover, Hide, Stego, N = 2):
     try:
@@ -288,21 +290,14 @@ def Extract_Text(Stego, Cover, Text):
     except Exception as e:
         print(f"\nError! {e}\n")
 
-if __name__ == "__main__":
-    app = Flask(__name__)
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-    @app.route('/')
-    def index():
-        return render_template('index.html')
+@app.route('/embed', methods=['POST'])
+def embed():
+    return jsonify({"status": "success"})
 
-    @app.route('/embed', methods=['POST'])
-    def embed():
-        # Handle image embedding logic here
-        return jsonify({"status": "success"})
-
-    @app.route('/extract', methods=['POST'])
-    def extract():
-        # Handle image extraction logic here
-        return jsonify({"status": "success"})
-
-    app.run(debug=True)
+@app.route('/extract', methods=['POST'])
+def extract():
+    return jsonify({"status": "success"})
