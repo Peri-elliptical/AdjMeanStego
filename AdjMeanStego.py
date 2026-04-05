@@ -3,7 +3,7 @@ import math
 from flask import Flask, app, request, jsonify, render_template
 from PIL import Image
 
-app = Flask(__name__, template_folder='.')
+app = Flask(__name__, template_folder='.', static_folder='.')
 
 def Embed_Image(Cover, Hide, Stego, N = 2):
     try:
