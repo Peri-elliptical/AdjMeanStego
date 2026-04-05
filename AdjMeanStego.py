@@ -1,5 +1,6 @@
 import numpy as np
 import math
+from flask import Flask, request, jsonify, render_template
 from PIL import Image
 
 def Embed_Image(Cover, Hide, Stego, N = 2):
@@ -286,3 +287,22 @@ def Extract_Text(Stego, Cover, Text):
         print("\nError! The image was not found. Please check the path and try again.\n")
     except Exception as e:
         print(f"\nError! {e}\n")
+
+if __name__ == "__main__":
+    app = Flask(__name__)
+
+    @app.route('/')
+    def index():
+        return render_template('index.html')
+
+    @app.route('/embed', methods=['POST'])
+    def embed():
+        # Handle image embedding logic here
+        return jsonify({"status": "success"})
+
+    @app.route('/extract', methods=['POST'])
+    def extract():
+        # Handle image extraction logic here
+        return jsonify({"status": "success"})
+
+    app.run(debug=True)
