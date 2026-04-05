@@ -1,6 +1,6 @@
 import numpy as np
 import math
-from flask import Flask, app, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template
 from PIL import Image
 
 app = Flask(__name__, template_folder='.', static_folder='.')
