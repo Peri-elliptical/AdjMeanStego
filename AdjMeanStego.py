@@ -1,5 +1,7 @@
 import numpy as np
 import math
+import base64
+import io
 from flask import Flask, request, jsonify, render_template
 from PIL import Image
 
@@ -296,13 +298,19 @@ def index():
 
 @app.route('/embed', methods=['POST'])
 def embed():
-    image = request.files['input_image']  # the uploaded image file
-    message = request.form['message']      # the text message
+    image = request.files['input_image']
+    message = request.form['message']
 
-    print(image.filename)  # e.g. "photo.png"
-    print(message)         # e.g. "Hello World"
+    img = Image.open(image.stream).convert('RGB')
 
-    return jsonify({"status": "success"})
+    buffer = io.BytesIO()
+    img.save(buffer, format='PNG')
+    buffer.seek(0)
+
+    # convert to base64
+    img_data = base64.b64encode(buffer.read()).decode('utf-8')
+
+    return jsonify({"status": "success", "image": img_data})
 
 @app.route('/extract', methods=['POST'])
 def extract():
