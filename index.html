@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>AdjMeanStego</title>
+    </head> 
+    <body>
+        <h1 style="text-align: center;">Adjacent Mean Steganography</h1>
+        <form action="AdjMeanStego.py" method="post" enctype="image/*">
+            <label for="input_image">Input Image:</label>
+            <input type="file" id="input_image" name="input_image" accept=".bmp,.png,.jpg,.jpeg" required><br><br>
+            
+            <label for="message">Message to Hide:</label><br>
+            <textarea id="message" name="message" rows="4" cols="50" required></textarea><br><br>
+            
+            <input type="submit" value="Hide Message">
+        </form>
+    </body>
+</html>

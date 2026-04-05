@@ -2,53 +2,7 @@ import numpy as np
 import math
 from PIL import Image
 
-array = 0
-
-c_array = np.array([
-    # Row 0
-    [[  0,   0, 255], [  0,  32, 128], [  0,  64, 255], [  0,  96, 128], [  0, 128, 255],
-     [  0, 160, 128], [  0, 192, 255], [  0, 224, 128], [  0, 255, 255], [  0, 255, 128]],
-    # Row 1
-    [[ 36,   0, 128], [ 36,  32, 255], [ 36,  64, 128], [ 36,  96, 255], [ 36, 128, 128],
-     [ 36, 160, 255], [ 36, 192, 128], [ 36, 224, 255], [ 36, 255, 128], [ 36, 255, 255]],
-    # Row 2
-    [[ 72,   0, 255], [ 72,  32, 128], [ 72,  64, 255], [ 72,  96, 128], [ 72, 128, 255],
-     [ 72, 160, 128], [ 72, 192, 255], [ 72, 224, 128], [ 72, 255, 255], [ 72, 255, 128]],
-    # Row 3
-    [[108,   0, 128], [108,  32, 255], [108,  64, 128], [108,  96, 255], [108, 128, 128],
-     [108, 160, 255], [108, 192, 128], [108, 224, 255], [108, 255, 128], [108, 255, 255]],
-    # Row 4
-    [[144,   0, 255], [144,  32, 128], [144,  64, 255], [144,  96, 128], [144, 128, 255],
-     [144, 160, 128], [144, 192, 255], [144, 224, 128], [144, 255, 255], [144, 255, 128]],
-    # Row 5
-    [[180,   0, 128], [180,  32, 255], [180,  64, 128], [180,  96, 255], [180, 128, 128],
-     [180, 160, 255], [180, 192, 128], [180, 224, 255], [180, 255, 128], [180, 255, 255]],
-    # Row 6
-    [[216,   0, 255], [216,  32, 128], [216,  64, 255], [216,  96, 128], [216, 128, 255],
-     [216, 160, 128], [216, 192, 255], [216, 224, 128], [216, 255, 255], [216, 255, 128]],
-    # Row 7
-    [[252,   0, 128], [252,  32, 255], [252,  64, 128], [252,  96, 255], [252, 128, 128],
-     [252, 160, 255], [252, 192, 128], [252, 224, 255], [252, 255, 128], [252, 255, 255]],
-    # Row 8
-    [[255,   0, 255], [255,  32, 128], [255,  64, 255], [255,  96, 128], [255, 128, 255],
-     [255, 160, 128], [255, 192, 255], [255, 224, 128], [255, 255, 255], [255, 255, 128]],
-    # Row 9
-    [[255,   0, 128], [255,  32, 255], [255,  64, 128], [255,  96, 255], [255, 128, 128],
-     [255, 160, 255], [255, 192, 128], [255, 224, 255], [255, 255, 128], [255, 255, 255]]
-], dtype=np.int16)
-
-h_array = [
-    [[255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255]],
-    [[255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255]],
-    [[255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255]],
-    [[255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255]],
-    [[255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255]],
-    [[255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255]],
-    [[255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255]],
-    [[255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255], [255, 255, 255]]
-]
-
-def Embed_Image(Cover = "/home/george/Pictures/DewDrops.jpg", Hide = "/home/george/Pictures/secret.png", Stego = "/home/george/Pictures/Stego.png", N = 2):
+def Embed_Image(Cover, Hide, Stego, N = 2):
     try:
         c_img = Image.open(Cover).convert('RGB')   
         c_array = np.array(c_img, dtype = np.uint16)
@@ -123,7 +77,7 @@ def Embed_Image(Cover = "/home/george/Pictures/DewDrops.jpg", Hide = "/home/geor
     except Exception as e:
         print(f"\nError! {e}\n")
 
-def Extract_Image(Stego = "/home/george/Pictures/Stego.png", Cover = "/home/george/Pictures/Drops.png", Hidden = "/home/george/Pictures/Covenant.png"):
+def Extract_Image(Stego, Cover, Hidden):
     try:
         s_img = Image.open(Stego).convert('RGB')   
         s_array = np.array(s_img, dtype = np.uint8)
@@ -223,7 +177,8 @@ def EmbPixels(x, y):
     if x < 0 or y < 0:
         return 0
     return (x * y + (x & 1) * (y & 1)) >> 1
-def Embed_Text(Cover = "/home/george/Pictures/Birds.webp", Embed = "/home/george/Downloads/Message.txt", Stego = "/home/george/Pictures/Birds_Stego.png", N = 7, Wrap = True):
+
+def Embed_Text(Cover, Embed, Stego, N = 2, Wrap = True):
     try:
         img = Image.open(Cover).convert('RGB')   
         array = np.array(img, dtype = np.int16)
@@ -290,7 +245,7 @@ def Embed_Text(Cover = "/home/george/Pictures/Birds.webp", Embed = "/home/george
     except Exception as e:
         print(f"\nError! {e}\n")
 
-def Extract_Text(Stego = "/home/george/Pictures/Birds_Stego.png", Cover = "/home/george/Pictures/Birds_Ext.png", Text = "/home/george/Downloads/Extract.txt"):
+def Extract_Text(Stego, Cover, Text):
     try:
         img = Image.open(Stego).convert('RGB')   
         array = np.array(img, dtype=np.int16)
@@ -331,36 +286,3 @@ def Extract_Text(Stego = "/home/george/Pictures/Birds_Stego.png", Cover = "/home
         print("\nError! The image was not found. Please check the path and try again.\n")
     except Exception as e:
         print(f"\nError! {e}\n")
-
-try:
-    print("\n1. Image Embedding")
-    print("2. Image Extraction")
-    print("3. Text Embedding")
-    print("4. Text Extraction\n")
-    choice = int(input("Choose what type of data you wish to embed: ").strip())
-    if choice == 1:
-        Cover = input("\nEnter the path of the Cover Image: ")
-        Embed = input("Enter the path of the image to be embedded: ")
-        Embed_Image()
-        Extract_Image()
-    elif choice == 3:
-        Cover = input("\nEnter the path of the Cover Image: ").strip()
-        Embed = input("Enter the path of the text file: ").strip()
-        Stego = input("Enter the path of the Stego Image: ").strip()
-        N = int(input("Enter the embedding depth: ").strip())
-        Wrap = input("Enable Text Wrapping? (Y/N): ").strip().upper()
-        Wrap = True if Wrap == 'Y' else False
-        print()
-        Embed_Text()
-    elif choice == 4:
-        Stego = input("\nEnter the path of the Stego Image: ").strip()
-        Cover = input("Enter the path of the Extracted Image: ").strip()
-        Text = input("Enter the path of the Extracted Text: ").strip()
-        print()
-        Extract_Text()
-    else:
-        raise ValueError("Invalid option.")
-except ValueError:
-    print(f"\nError! Non-integer detected!\n")
-except Exception as e:
-    print(f"\nError! {e}\n")
