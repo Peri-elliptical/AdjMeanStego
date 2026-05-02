@@ -7,10 +7,9 @@
     <body>
         <h1 style="text-align: center;">Adjacent Mean Steganography</h1>
 
-        <label for="input_image">Enter the Cover Image:</label>
-        <input type="file" id="input_image" name="input_image" required><br><br>
+        Enter the Cover Image: <input type="file" id="input_image" name="input_image" required><br><br>
         
-        <label for="message">Message to Hide:</label><br>
+        Message to Hide:<br>
         <textarea id="message" name="message" rows="4" cols="50" required></textarea><br><br>
         
         <button onclick="submitForm()">Embed Message</button><br><br>
@@ -31,7 +30,7 @@
 
             const result = await response.json();
             document.getElementById('output').innerText = result.status;
-            document.getElementById('result_image').src = 'data:image/png;base64,' + result.image;  // ← this line is missing
+            document.getElementById('result_image').src = 'data:image/png;base64,' + result.image;
         }
         </script>
     </body>
