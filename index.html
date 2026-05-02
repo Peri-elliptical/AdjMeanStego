@@ -16,22 +16,7 @@
         Stego Image: <br>
         <p id="output"></p>
 
-        <img id="result_image" src="" alt="Result will appear here">
-        <script>
-        async function submitForm() {
-            const formData = new FormData();
-            formData.append('input_image', document.getElementById('input_image').files[0]);
-            formData.append('message', document.getElementById('message').value);
-
-            const response = await fetch('/embed', {
-                method: 'POST',
-                body: formData
-            });
-
-            const result = await response.json();
-            document.getElementById('output').innerText = result.status;
-            document.getElementById('result_image').src = 'data:image/png;base64,' + result.image;
-        }
-        </script>
+        <img id="result_image" src="" style="max-width: 100%;">
+        <script src="script.js"></script>
     </body>
 </html>
