@@ -6,11 +6,11 @@ async function submitForm() {
 
     // 1. Basic validation
     if (imageInput.files.length === 0) {
-        outputText.innerText = "Error: Please select a cover image first.";
+        outputText.innerText = "❌ Error: Please select a cover image first.";
         return;
     }
     if (messageInput.value.trim() === "") {
-        outputText.innerText = "Error: Please enter a message to hide.";
+        outputText.innerText = "❌ Error: Please enter a message to hide.";
         return;
     }
 
@@ -40,10 +40,10 @@ async function submitForm() {
         const imageUrl = URL.createObjectURL(blob);
         resultImage.src = imageUrl;
         
-        outputText.innerText = "Success! Here is your Stego Image.";
+        outputText.innerText = "✅ Success! Here is your Stego Image.";
 
     } catch (error) {
         console.error("Upload failed:", error);
-        outputText.innerText = "Processing failed. Check the console for details.";
+        outputText.innerText = "❌ Processing failed. Check the console for details.";
     }
 }

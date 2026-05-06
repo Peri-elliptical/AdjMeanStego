@@ -8,6 +8,6 @@ uint8_t* create_buffer(int width, int height) {
 }
 
 EMSCRIPTEN_KEEPALIVE
-void process_stego(uint8_t* img_data, int width, int height) {
-    // Your logic: Loop through img_data and apply steganography
+void process_stego(uint8_t* img_data, int width, int height, const char* message, int msg_len) {
+    // C modifies img_data directly in place
 }
