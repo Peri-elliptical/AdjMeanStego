@@ -7,7 +7,7 @@ export default {
         if (request.method === "OPTIONS") {
             return new Response(null, {
                 headers: {
-                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Origin": "https://adjmeanstego.len3rvz.workers.dev",
                     "Access-Control-Allow-Methods": "POST, OPTIONS",
                 }
             });
@@ -85,7 +85,7 @@ export default {
                 return new Response(outBuffer, {
                     headers: {
                         'Content-Type': 'image/png',
-                        'Access-Control-Allow-Origin': '*'
+                        'Access-Control-Allow-Origin': 'https://adjmeanstego.len3rvz.workers.dev'
                     }
                 });
 

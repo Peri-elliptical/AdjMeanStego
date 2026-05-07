@@ -24,7 +24,7 @@ async function submitForm() {
     try {
         // 3. Send the data to your Cloudflare Worker / Server endpoint
         // Replace '/api/embed' with your actual server URL when deployed
-        const response = await fetch('/api/embed', {
+        const response = await fetch('https://adjmeanstego.len3rvz.workers.dev/api/embed', {
             method: 'POST',
             body: formData
         });
