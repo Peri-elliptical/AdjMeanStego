@@ -15,7 +15,7 @@ void process_stego(uint8_t* img_data, int width, int height, const char* message
             for (int x = 0; x < 50; x++) {
                 // Ensure we don't draw outside the image if it's smaller than 50x50
                 if (x < width && y < height) {
-                    int index = (y * width + x) * 3; // 3 bytes per pixel (RGB)
+                    int index = (y * width + x) * 4; // 4 bytes per pixel (RGBA)
                     img_data[index]     = 255; // Red
                     img_data[index + 1] = 0;   // Green
                     img_data[index + 2] = 0;   // Blue
