@@ -1,4 +1,4 @@
-import stegoWasm from './stego.wasm';
+import AdjMeanStegoWasm from './AdjMeanStego.wasm';
 import UPNG from 'upng-js';
 
 export default {
@@ -32,7 +32,7 @@ export default {
                 const rgba = new Uint8Array(UPNG.toRGBA8(img)[0]); 
 
                 // 4. Initialize WebAssembly
-                const wasmInstance = await WebAssembly.instantiate(stegoWasm, {
+                const wasmInstance = await WebAssembly.instantiate(AdjMeanStegoWasm, {
                     env: {
                         memory: new WebAssembly.Memory({ initial: 256 }),
                         emscripten_resize_heap: () => false 
