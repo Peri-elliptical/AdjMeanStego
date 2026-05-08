@@ -1,79 +1,113 @@
-// NEW HELPER FUNCTION: Converts any image to a PNG using the browser's Canvas
-function convertImageToPng(file) {
-    return new Promise((resolve, reject) => {
-        const img = new Image();
+// 1. GLOBAL VARIABLE: Holds your C functions
+let wasmExports = null;
+
+// 2. LOAD WASM ON BOOT: Fetches the file the moment the website loads
+async function loadWasm() {
+    try {
+        const response = await fetch('AdjMeanStego.wasm');
+        const wasmBytes = await response.arrayBuffer();
         
-        // When the image loads, draw it to a canvas
-        img.onload = () => {
-            const canvas = document.createElement('canvas');
-            canvas.width = img.width;
-            canvas.height = img.height;
-            
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0);
-            
-            // Export the canvas as a pure PNG file (Blob)
-            canvas.toBlob((blob) => {
-                resolve(blob);
-            }, 'image/png');
-        };
+        // Instantiate the C code
+        const wasmModule = await WebAssembly.instantiate(wasmBytes, {
+            env: {
+                emscripten_resize_heap: () => 0 // Failsafe for Emscripten memory
+            }
+        });
         
-        img.onerror = () => reject(new Error("Failed to load image for conversion."));
-        
-        // Feed the uploaded file to the Image object
-        img.src = URL.createObjectURL(file);
-    });
+        wasmExports = wasmModule.instance.exports;
+        console.log("✅ WebAssembly Engine Loaded!");
+    } catch (error) {
+        console.error("❌ Failed to load WebAssembly:", error);
+        document.getElementById('output').innerText = "❌ Error: Could not load the steganography engine.";
+    }
 }
 
+// Call this immediately
+loadWasm();
+
+// 3. THE MAIN ENGINE
 async function submitForm() {
     const imageInput = document.getElementById('input_image');
     const messageInput = document.getElementById('message');
     const resultImage = document.getElementById('result_image');
     const outputText = document.getElementById('output');
 
-    if (imageInput.files.length === 0) {
-        outputText.innerText = "❌ Error: Please select a cover image first.";
-        return;
-    }
-    if (messageInput.value.trim() === "") {
-        outputText.innerText = "❌ Error: Please enter a message to hide.";
+    if (!wasmExports) {
+        outputText.innerText = "⏳ Please wait a second, the WebAssembly engine is still loading...";
         return;
     }
 
-    outputText.innerText = "Processing image...";
+    if (imageInput.files.length === 0 || messageInput.value.trim() === "") {
+        outputText.innerText = "❌ Error: Please select an image and enter a message.";
+        return;
+    }
+
+    outputText.innerText = "Processing directly on your device...";
+    const file = imageInput.files[0];
 
     try {
-        // 1. CONVERT THE IMAGE BEFORE SENDING
-        // No matter what the user uploaded (JPG, WebP), this turns it into a PNG
-        const originalFile = imageInput.files[0];
-        const pngBlob = await convertImageToPng(originalFile);
-
-        // 2. Package the newly converted PNG
-        const formData = new FormData();
-        // We pass the new blob and give it a dummy filename ending in .png
-        formData.append('image', pngBlob, 'cover.png'); 
-        formData.append('message', messageInput.value);
-
-        outputText.innerText = "Sending to server...";
-
-        // 3. Send to Cloudflare Worker
-        const response = await fetch('https://adjmeanstego.len3rvz.workers.dev/api/embed', {
-            method: 'POST',
-            body: formData
+        // --- A. BROWSER DECODING (Replaces upng-js) ---
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+        
+        // Wait for image to load
+        await new Promise((resolve, reject) => {
+            img.onload = resolve;
+            img.onerror = reject;
         });
 
-        if (!response.ok) {
-            throw new Error(`Server responded with status: ${response.status}`);
-        }
+        // Draw to invisible canvas to strip formatting
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
 
-        const blob = await response.blob();
-        const imageUrl = URL.createObjectURL(blob);
-        resultImage.src = imageUrl;
+        // Extract the raw RGBA pixel array!
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const pixels = imageData.data; 
+
+        // --- B. WEBASSEMBLY MEMORY MANAGEMENT ---
+        const imgByteLength = canvas.width * canvas.height * 4;
         
-        outputText.innerText = "✅ Success! Here is your Stego Image.";
+        // Ask C for memory space
+        const imgPointer = wasmExports.create_buffer(canvas.width, canvas.height);
+        
+        const encoder = new TextEncoder();
+        const msgBytes = encoder.encode(messageInput.value);
+        const msgPointer = wasmExports.malloc(msgBytes.length);
+
+        // Create a Javascript "window" into C's memory
+        const wasmMemory = new Uint8Array(wasmExports.memory.buffer);
+        
+        // Copy our pixels and text INTO C's memory
+        wasmMemory.set(pixels, imgPointer);
+        wasmMemory.set(msgBytes, msgPointer);
+
+        // --- C. EXECUTE C CODE ---
+        wasmExports.process_stego(imgPointer, canvas.width, canvas.height, msgPointer, msgBytes.length);
+
+        // --- D. RETRIEVE AND RENDER ---
+        // Grab the modified pixels BACK from C
+        const modifiedPixels = wasmMemory.slice(imgPointer, imgPointer + imgByteLength);
+
+        // FREE THE MEMORY (Crucial so the browser doesn't crash on multiple uploads)
+        wasmExports.free(imgPointer);
+        wasmExports.free(msgPointer);
+
+        // Shove the modified pixels back into the canvas
+        imageData.data.set(modifiedPixels);
+        ctx.putImageData(imageData, 0, 0);
+
+        // Export the canvas as a new PNG and show the user
+        canvas.toBlob((blob) => {
+            const imageUrl = URL.createObjectURL(blob);
+            resultImage.src = imageUrl;
+            outputText.innerText = "✅ Success! Processing complete. Zero server usage!";
+        }, 'image/png');
 
     } catch (error) {
-        console.error("Upload failed:", error);
-        outputText.innerText = "❌ Processing failed. Check the console for details.";
+        console.error("Processing error:", error);
+        outputText.innerText = "❌ Processing failed. Check console for details.";
     }
 }
