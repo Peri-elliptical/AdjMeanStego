@@ -1,6 +1,7 @@
 {
   "name": "adjmeanstego",
   "compatibility_date": "2026-04-25",
+  "main": "worker/src/index.js",
   "observability": {
     "enabled": true
   },
