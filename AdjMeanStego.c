@@ -11,7 +11,7 @@ EMSCRIPTEN_KEEPALIVE
 void process_stego(uint8_t* img_data, int width, int height, const char* message, int msg_len) {
     // If the user typed a message, draw a 50x50 red square in the top-left corner
     if (msg_len > 0) {
-        /*for (int y = 0; y < 50; y++) {
+        for (int y = 0; y < 50; y++) {
             for (int x = 0; x < 50; x++) {
                 // Ensure we don't draw outside the image if it's smaller than 50x50
                 if (x < width && y < height) {
@@ -22,10 +22,6 @@ void process_stego(uint8_t* img_data, int width, int height, const char* message
                     img_data[index + 3] = 255; // Alpha
                 }
             }
-        }*/
-        img_data[0] = 255;
-        img_data[1] = 255;
-        img_data[2] = 255;
-        img_data[3] = 255;
+        }
     }
 }
