@@ -19,6 +19,7 @@ void process_stego(uint8_t* img_data, int width, int height, const char* message
                     img_data[index]     = 255; // Red
                     img_data[index + 1] = 0;   // Green
                     img_data[index + 2] = 0;   // Blue
+                    img_data[index + 3] = 255; // Alpha
                 }
             }
         }
