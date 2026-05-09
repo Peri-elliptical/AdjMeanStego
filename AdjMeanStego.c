@@ -8,8 +8,7 @@ uint8_t* create_buffer(int width, int height) {
 }
 
 EMSCRIPTEN_KEEPALIVE
-void process_stego(uint8_t* img_data, int width, int height, const char* message, int msg_len) {
-    // If the user typed a message, draw a 50x50 red square in the top-left corner
+void process_stego(uint8_t* img_data, int width, int height, const char* message, int msg_len, int emb_depth) {
     if (msg_len > 0) {
         for (int y = 1; y < height - 1; y++) {
             for (int x = 1; x < width - 1; x++) {

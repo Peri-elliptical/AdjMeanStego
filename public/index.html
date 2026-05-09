@@ -9,8 +9,18 @@
 
         Enter the Cover Image: <input type="file" id="input_image" name="input_image" accept="image/*" required><br><br>
         
-        Message to Hide:<br>
+        Secret Message:<br>
         <textarea id="message" name="message" rows="4" cols="50" required></textarea><br><br>
+        Embedding depth:
+        <select name="EmbDepth" id="EmbDepth">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+        </select>
         
         <button onclick="submitForm()">Embed Message</button><br><br>
         Stego Image: <br><br>

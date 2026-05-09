@@ -29,6 +29,7 @@ loadWasm();
 async function submitForm() {
     const imageInput = document.getElementById('input_image');
     const messageInput = document.getElementById('message');
+    const depthInput = document.getElementById('EmbDepth');
     const resultImage = document.getElementById('result_image');
     const outputText = document.getElementById('output');
 
@@ -77,6 +78,9 @@ async function submitForm() {
         const msgBytes = encoder.encode(messageInput.value);
         const msgPointer = wasmExports.malloc(msgBytes.length);
 
+        const embDepth = parseInt(depthInput.value);
+        console.log(`Embedding depth set to: ${embDepth} bits per channel`);
+
         // Create a Javascript "window" into C's memory
         const wasmMemory = new Uint8Array(wasmExports.memory.buffer);
         
@@ -85,7 +89,7 @@ async function submitForm() {
         wasmMemory.set(msgBytes, msgPointer);
 
         // --- C. EXECUTE C CODE ---
-        wasmExports.process_stego(imgPointer, canvas.width, canvas.height, msgPointer, msgBytes.length);
+        wasmExports.process_stego(imgPointer, canvas.width, canvas.height, msgPointer, msgBytes.length, embDepth);
 
         // --- D. RETRIEVE AND RENDER ---
         // Grab the modified pixels BACK from C
