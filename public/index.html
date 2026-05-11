@@ -3,6 +3,13 @@
     <head>
         <meta charset="UTF-8">
         <title>AdjMeanStego</title>
+        <style>
+            .row-container {
+                display: flex;
+                flex-direction: row; /* Places items side-by-side */
+                gap: 20px;           /* Adds 20px of space strictly between the items */
+            }
+        </style>
     </head> 
     <body>
         <h1 style="text-align: center;">Adjacent Mean Steganography</h1>
@@ -11,6 +18,7 @@
         
         Secret Message:<br>
         <textarea id="message" name="message" rows="4" cols="50" required></textarea><br><br>
+        <div class="row-container">
         Embedding depth:
         <select name="EmbDepth" id="EmbDepth">
             <option value="1">1</option>
@@ -20,8 +28,7 @@
             <option value="5">5</option>
             <option value="6">6</option>
             <option value="7">7</option>
-        </select><spacing style="line-height: 2;"></spacing><input type="checkbox" id="vehicle1" name="vehicle1" value="String Repetition">String Repetition<br><br>
-        <br><br>
+        </select><input type="checkbox" id="vehicle1" name="vehicle1" value="String Repetition">String Repetition<br><br></div>
         <button onclick="submitForm()">Embed Message</button><br><br>
 
         Stego Image: <br><br>
