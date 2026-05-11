@@ -127,7 +127,7 @@ async function submitForm() {
         canvas.toBlob((blob) => {
             const imageUrl = URL.createObjectURL(blob);
             resultImage.src = imageUrl;
-            outputText.innerText = "✅ Success! Processing complete. Zero server usage!";
+            outputText.innerText = "✅ Success! Processing complete.";
         }, 'image/png');
 
     } catch (error) {
