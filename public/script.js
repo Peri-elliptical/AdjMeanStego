@@ -1,6 +1,15 @@
 // 1. GLOBAL VARIABLE: Holds your C functions
 let wasmExports = null;
 
+function embPixels(x, y) {
+    x -= 2;
+    y -= 2;
+    if (x < 0 || y < 0) {
+        return 0;
+    }
+    return (x * y + (x & 1) * (y & 1)) >> 1;
+}
+
 // 2. LOAD WASM ON BOOT: Fetches the file the moment the website loads
 async function loadWasm() {
     try {
@@ -38,9 +47,16 @@ async function submitForm() {
         return;
     }
 
-    if (imageInput.files.length === 0 || messageInput.value.trim() === "") {
+    if (imageInput.files.length === 0 || messageInput.value === "") {
         outputText.innerText = "❌ Error: Please select an image and enter a message.";
         return;
+    }
+
+    for (let i = 0; i < messageInput.value.length; i++) {
+        if (messageInput.value.charCodeAt(i) > 127) {
+            outputText.innerText = "❌ Error: Message contains non-ASCII characters.";
+            return;
+        }
     }
 
     outputText.innerText = "Processing directly on your device...";
@@ -56,6 +72,11 @@ async function submitForm() {
             img.onload = resolve;
             img.onerror = reject;
         });
+
+        if (embPixels(img.width, img.height) * depthInput.value < messageInput.value.length * 7) {
+            outputText.innerText = "❌ Error: The entire message cannot be embedded in the selected image. Please choose a larger image, reduce the message length or increase the embedding depth.";
+            return;
+        }
 
         // Draw to invisible canvas to strip formatting
         const canvas = document.createElement('canvas');
@@ -79,7 +100,6 @@ async function submitForm() {
         const msgPointer = wasmExports.malloc(msgBytes.length);
 
         const embDepth = parseInt(depthInput.value);
-        console.log(`Embedding depth set to: ${embDepth} bits per channel`);
 
         // Create a Javascript "window" into C's memory
         const wasmMemory = new Uint8Array(wasmExports.memory.buffer);
