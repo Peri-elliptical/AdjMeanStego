@@ -4,10 +4,13 @@
         <meta charset="UTF-8">
         <title>AdjMeanStego</title>
         <style>
+            .form-wrapper {
+                width: max-content;
+            }
             .row-container {
                 display: flex;
-                flex-direction: row; /* Places items side-by-side */
-                gap: 20px;           /* Adds 20px of space strictly between the items */
+                justify-content: space-between;
+                align-items: center;
             }
         </style>
     </head> 
@@ -15,22 +18,32 @@
         <h1 style="text-align: center;">Adjacent Mean Steganography</h1>
 
         Enter the Cover Image: <input type="file" id="input_image" name="input_image" accept="image/*" required><br><br>
-        
-        Secret Message:<br>
-        <textarea id="message" name="message" rows="4" cols="50" required></textarea><br><br>
-        Embedding depth:
-        <select name="EmbDepth" id="EmbDepth">
-            <option value="1">1</option>
-            <option value="2" selected>2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-        </select>
-        <div class="row-container">
-            <input type="checkbox" id="vehicle1" name="vehicle1" value="String Repetition">String Repetition<br><br>
+
+        <div class="form-wrapper">
+            Secret Message:<br>
+            <textarea style="resize:none" id="message" name="message" rows="4" cols="50" required></textarea><br>
+            
+            <div class="row-container">
+                <div>
+                    Embedding depth:
+                    <select name="EmbDepth" id="EmbDepth">
+                        <option value="1">1</option>
+                        <option value="2" selected>2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                    </select>
+                </div>
+
+                <div>
+                    <input type="checkbox" id="string_rep" name="string_rep" value="String Repetition">
+                    <label for="string_rep">String Repetition</label>
+                </div>
+            </div>
         </div>
+        <br>
         <button onclick="submitForm()">Embed Message</button><br><br>
 
         Stego Image: <br><br>

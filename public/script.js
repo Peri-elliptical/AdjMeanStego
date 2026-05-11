@@ -39,8 +39,12 @@ async function submitForm() {
     const imageInput = document.getElementById('input_image');
     const messageInput = document.getElementById('message');
     const depthInput = document.getElementById('EmbDepth');
+    const stringRep = document.getElementById('string_rep');
     const resultImage = document.getElementById('result_image');
     const outputText = document.getElementById('output');
+
+    const embDepth = parseInt(depthInput.value);
+    const stringRep = stringRep.checked;
 
     if (!wasmExports) {
         outputText.innerText = "⏳ Please wait a second, the WebAssembly engine is still loading...";
@@ -73,7 +77,7 @@ async function submitForm() {
             img.onerror = reject;
         });
 
-        if (embPixels(img.width, img.height) * depthInput.value < messageInput.value.length * 7) {
+        if (embPixels(img.width, img.height) * embDepth < messageInput.value.length * 7) {
             outputText.innerText = "❌ Error: The entire message cannot be embedded in the selected image. Please choose a larger image, reduce the message length or increase the embedding depth.";
             return;
         }
@@ -99,7 +103,6 @@ async function submitForm() {
         const msgBytes = encoder.encode(messageInput.value);
         const msgPointer = wasmExports.malloc(msgBytes.length);
 
-        const embDepth = parseInt(depthInput.value);
 
         // Create a Javascript "window" into C's memory
         const wasmMemory = new Uint8Array(wasmExports.memory.buffer);
@@ -109,7 +112,7 @@ async function submitForm() {
         wasmMemory.set(msgBytes, msgPointer);
 
         // --- C. EXECUTE C CODE ---
-        wasmExports.process_stego(imgPointer, canvas.width, canvas.height, msgPointer, msgBytes.length, embDepth);
+        wasmExports.process_stego(imgPointer, canvas.width, canvas.height, msgPointer, msgBytes.length, embDepth, stringRep);
 
         // --- D. RETRIEVE AND RENDER ---
         // Grab the modified pixels BACK from C
