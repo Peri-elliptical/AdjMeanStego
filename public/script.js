@@ -10,6 +10,19 @@ function embPixels(x, y) {
     return (x * y + (x & 1) * (y & 1)) >> 1;
 }
 
+function updateClip() {
+    const w = window.innerWidth;
+    document.getElementById('barClipPath').setAttribute('d',
+        `M 0 0 L ${w} 0 L ${w} 5 L ${Math.trunc(w/2)} 5 A 25 25 0 0 0 ${Math.trunc(w/2) - 25} 30 A 25 25 0 0 1 ${Math.trunc(w/2) - 50} 55 L 50 55 A 25 25 0 0 1 25 30 A 25 25 0 0 0 0 5 Z`
+    );
+    document.getElementById('barClipPath2').setAttribute('d',
+        `M 0 0 L ${w} 0 L ${w} 5 A 25 25 0 0 0 ${w - 25} 30 A 25 25 0 0 1 ${w - 50} 55 L ${Math.trunc(w/2) + 50} 55 A 25 25 0 0 1 ${Math.trunc(w/2) + 25} 30 A 25 25 0 0 0 ${Math.trunc(w/2)} 5 L 0 5 Z`
+    );
+}
+
+window.addEventListener('resize', updateClip);
+updateClip();
+
 // 2. LOAD WASM ON BOOT: Fetches the file the moment the website loads
 async function loadWasm() {
     try {
@@ -44,7 +57,7 @@ async function submitForm() {
     const outputText = document.getElementById('output');
 
     const embDepth = parseInt(depthInput.value);
-    const stringRep = stringRep.checked;
+    const stringRepChecked = stringRep.checked;
 
     if (!wasmExports) {
         outputText.innerText = "⏳ Please wait a second, the WebAssembly engine is still loading...";
@@ -112,7 +125,7 @@ async function submitForm() {
         wasmMemory.set(msgBytes, msgPointer);
 
         // --- C. EXECUTE C CODE ---
-        wasmExports.process_stego(imgPointer, canvas.width, canvas.height, msgPointer, msgBytes.length, embDepth, stringRep);
+        wasmExports.process_stego(imgPointer, canvas.width, canvas.height, msgPointer, msgBytes.length, embDepth, stringRepChecked);
 
         // --- D. RETRIEVE AND RENDER ---
         // Grab the modified pixels BACK from C
