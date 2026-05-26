@@ -3,332 +3,170 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>AdjMeanStego · Bidirectional + Wave Tabs</title>
+        <title>AdjMeanStego</title>
         <style>
             :root {
-                --bg: #0b0818;
-                --surface: #1b112a;
-                --surface2: #25183a;
-                --text: #ede9f6;
-                --muted: #9689b8;
-                --border: #372752;
-                
-                /* Action Colors */
-                --purple-light: #c4b5fd;
-                --purple: #8b5cf6;
-
-                --radius: 16px;
-                --radius-sm: 8px;
-                --transition: 0.2s ease;
+                --bg: #0b0818; --surface: #1b112a; --surface2: #25183a;
+                --text: #ede9f6; --muted: #9689b8; --border: #372752;
+                --purple-light: #c4b5fd; --purple: #8b5cf6;
+                --radius: 16px; --radius-sm: 8px; --transition: 0.2s ease;
             }
 
             * { margin: 0; padding: 0; box-sizing: border-box; }
             
             body {
                 font-family: 'Inter', system-ui, -apple-system, sans-serif;
-                background: var(--bg);
-                color: var(--text);
-                min-height: 100vh;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                padding: 100px 20px 40px; 
+                background: var(--bg); color: var(--text);
+                min-height: 100vh; display: flex; flex-direction: column;
+                align-items: center; padding: 100px 20px 40px; 
                 background-image: radial-gradient(circle at 50% -20%, rgba(139, 92, 246, 0.15), transparent 60%);
             }
 
-            /* ── Wave Top Bar ─────────────────────── */
-            .top-bar-container {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 60px;
-                z-index: 100;
-                filter: drop-shadow(0 4px 12px rgba(75, 0, 130, 0.5));
-                pointer-events: none;
-            }
-            .bar {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 60px;
-                background: linear-gradient(180deg, #4b0082, #9370db);
-                clip-path: url(#barClip);
-                pointer-events: auto;
-                cursor: pointer;
-                transition: filter 0.3s, background 0.3s;
-            }
-            .bar2 {
-                clip-path: url(#barClip2);
-                background: linear-gradient(180deg, #4b0082, #9370db);
-            }
-            .bar.active, .bar2.active {
-                filter: brightness(1.3) drop-shadow(0 0 8px rgba(180,130,255,0.6));
-                background: linear-gradient(180deg, #6d28d9, #a78bfa);
-                z-index: 1; 
-            }
-            .bar-label {
-                position: absolute;
-                top: 50%;
-                transform: translate(-50%, -50%); 
-                font-weight: 700;
-                font-size: 0.9rem;
-                color: rgba(255,255,255,0.85);
-                pointer-events: none;
-                text-shadow: 0 1px 4px rgba(0,0,0,0.5);
-                letter-spacing: 0.03em;
-                z-index: 5;
-            }
-            .label-left { left: 25%; }
-            .label-right { left: 75%; }
+            /* ── Wave Top Bar ── */
+            .top-bar-container { position: fixed; top: 0; left: 0; width: 100%; height: 60px; z-index: 100; filter: drop-shadow(0 4px 12px rgba(75, 0, 130, 0.5)); pointer-events: none; }
+            .bar { position: absolute; top: 0; left: 0; width: 100%; height: 60px; background: linear-gradient(180deg, #4b0082, #9370db); clip-path: url(#barClip); pointer-events: auto; cursor: pointer; transition: filter 0.3s, background 0.3s; }
+            .bar2 { clip-path: url(#barClip2); background: linear-gradient(180deg, #4b0082, #9370db); }
+            .bar.active, .bar2.active { filter: brightness(1.3) drop-shadow(0 0 8px rgba(180,130,255,0.6)); background: linear-gradient(180deg, #6d28d9, #a78bfa); z-index: 1; }
+            .bar-label { position: absolute; top: 50%; transform: translate(-50%, -50%); font-weight: 700; font-size: 0.9rem; color: rgba(255,255,255,0.85); pointer-events: none; text-shadow: 0 1px 4px rgba(0,0,0,0.5); letter-spacing: 0.03em; z-index: 5; }
+            .label-left { left: 25%; } .label-right { right: 25%; }
 
-            /* ── Header ───────────────────────────── */
+            /* ── Header & Layout ── */
             .header { text-align: center; margin-bottom: 40px; }
-            .header h1 {
-                font-size: 2rem;
-                font-weight: 700;
-                background: linear-gradient(135deg, #d8b4fe, #a78bfa);
-                -webkit-background-clip: text;
-                background-clip: text;
-                -webkit-text-fill-color: transparent;
-                letter-spacing: -0.02em;
-            }
+            .header h1 { font-size: 2rem; font-weight: 700; background: linear-gradient(135deg, #d8b4fe, #a78bfa); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.02em; }
             .header p { color: var(--muted); font-size: 0.9rem; margin-top: 4px; letter-spacing: 0.05em; text-transform: uppercase; }
+            .workspace { display: grid; grid-template-columns: 1fr 200px 1fr; gap: 24px; width: 100%; max-width: 1100px; }
+            @media (max-width: 850px) { .workspace { grid-template-columns: 1fr; } .center-actions { flex-direction: row !important; flex-wrap: wrap; } .center-actions .btn { flex: 1; min-width: 120px; } }
+            .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; display: flex; flex-direction: column; gap: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
+            .panel-title { font-size: 1.1rem; font-weight: 600; color: var(--purple-light); display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
 
-            /* ── Grid Layout ──────────────────────── */
-            .workspace {
-                display: grid;
-                grid-template-columns: 1fr 200px 1fr;
-                gap: 24px;
-                width: 100%;
-                max-width: 1100px;
-            }
-
-            @media (max-width: 850px) {
-                .workspace { grid-template-columns: 1fr; }
-                .center-actions { flex-direction: row !important; flex-wrap: wrap; }
-                .center-actions .btn { flex: 1; min-width: 120px; }
-            }
-
-            .panel {
-                background: var(--surface);
-                border: 1px solid var(--border);
-                border-radius: var(--radius);
-                padding: 24px;
-                display: flex;
-                flex-direction: column;
-                gap: 20px;
-                box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-            }
-
-            .panel-title {
-                font-size: 1.1rem;
-                font-weight: 600;
-                color: var(--purple-light);
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                border-bottom: 1px solid var(--border);
-                padding-bottom: 12px;
-            }
-
-            /* ── Center Controls ──────────────────── */
-            .center-actions {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                gap: 16px;
-            }
-
-            .settings-box {
-                background: var(--surface);
-                border: 1px solid var(--border);
-                border-radius: var(--radius);
-                padding: 16px;
-                display: flex;
-                flex-direction: column;
-                gap: 12px;
-            }
-
-            .settings-row {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                font-size: 0.9rem;
-            }
-
-            select {
-                background: var(--surface2);
-                color: var(--text);
-                border: 1px solid var(--border);
-                padding: 6px 10px;
-                border-radius: var(--radius-sm);
-                outline: none;
-                cursor: pointer;
-            }
-
-            /* Custom Checkbox */
+            /* ── Controls & Buttons ── */
+            .center-actions { display: flex; flex-direction: column; justify-content: center; gap: 16px; }
+            .settings-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+            .settings-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; }
+            select { background: var(--surface2); color: var(--text); border: 1px solid var(--border); padding: 6px 10px; border-radius: var(--radius-sm); outline: none; cursor: pointer; }
             .checkbox-group { display: flex; align-items: center; gap: 8px; cursor: pointer; }
             .checkbox-group input { display: none; }
-            .custom-check {
-                width: 18px; height: 18px; border-radius: 4px; border: 2px solid var(--border);
-                background: var(--surface2); display: flex; align-items: center; justify-content: center;
-                transition: var(--transition);
-            }
-            .checkbox-group input:checked + .custom-check {
-                background: var(--purple); border-color: var(--purple);
-            }
-            .checkbox-group input:checked + .custom-check::after {
-                content: ''; width: 4px; height: 8px; border: solid white; border-width: 0 2px 2px 0;
-                transform: rotate(45deg) translateY(-2px);
-            }
+            .custom-check { width: 18px; height: 18px; border-radius: 4px; border: 2px solid var(--border); background: var(--surface2); display: flex; align-items: center; justify-content: center; transition: var(--transition); }
+            .checkbox-group input:checked + .custom-check { background: var(--purple); border-color: var(--purple); }
+            .checkbox-group input:checked + .custom-check::after { content: ''; width: 4px; height: 8px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg) translateY(-2px); }
+            .btn { padding: 14px 20px; border: 2px solid transparent; border-radius: 12px; color: white; font-weight: 600; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+            .btn:hover { transform: translateY(-2px); } .btn:active { transform: translateY(1px); }
+            .btn-embed { background: #10b981; border-color: #047857; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); }
+            .btn-embed:hover { background: #059669; box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6); }
+            .btn-extract { background: #ef4444; border-color: #b91c1c; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); }
+            .btn-extract:hover { background: #dc2626; box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6); }
+            #downloadBtn { background: #8b5cf6 !important; border-color: #6d28d9; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); }
+            #downloadBtn:hover { background: #7c3aed !important; box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6); }
 
-            /* ── Solid Buttons ──────────────────────────── */
-            .btn {
-                padding: 14px 20px;
-                border: 2px solid transparent;
-                border-radius: 12px;
-                color: white;
-                font-weight: 600;
-                font-size: 0.95rem;
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 8px;
-                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                /* Removed backdrop-filter to eliminate the glass effect */
-            }
-            .btn:hover { transform: translateY(-2px); }
-            .btn:active { transform: translateY(1px); }
-
-            .btn-embed {
-                background: #10b981; /* Solid emerald */
-                border-color: #047857;
-                box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
-            }
-            .btn-embed:hover {
-                background: #059669; 
-                box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6);
-            }
-            
-            .btn-extract {
-                background: #ef4444; /* Solid red */
-                border-color: #b91c1c;
-                box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
-            }
-            .btn-extract:hover {
-                background: #dc2626;
-                box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6);
-            }
-            
-            #downloadBtn {
-                background: #8b5cf6 !important; /* Solid purple */
-                border-color: #6d28d9;
-                box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
-            }
-            #downloadBtn:hover {
-                background: #7c3aed !important;
-                box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6);
-            }
-
-            /* ── Input & Upload Zones ─────────────── */
-            .upload-zone {
-                border: 2px dashed var(--border);
-                border-radius: var(--radius-sm);
-                padding: 24px 16px;
-                text-align: center;
-                cursor: pointer;
-                background: var(--surface2);
-                transition: var(--transition);
+            /* ── Chunky Toggle Switch (Lossy/Lossless) ── */
+            .chunky-toggle {
                 position: relative;
+                display: inline-block;
+                height: 34px;
+                width: 110px; 
+                cursor: pointer;
+            }
+
+            .chunky-toggle input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+                position: absolute;
+            }
+
+            .toggle-track {
+                position: absolute;
+                top: 0; left: 0; right: 0; bottom: 0;
+                background-color: #5cb85c;
+                border-radius: 8px;
+                transition: background-color 0.3s;
+                box-shadow: inset 0 0 0 1px rgba(0,0,0,0.2);
                 overflow: hidden;
-                min-height: 120px;
+            }
+
+            .toggle-knob {
+                position: absolute;
+                height: 28px;
+                width: 32px;
+                left: 3px;
+                bottom: 3px;
+                background-color: white;
+                border-radius: 6px;
+                transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                z-index: 2;
+            }
+
+            /* ── The Fix: Perfect Flexbox Centering ── */
+            .toggle-text {
+                position: absolute;
+                top: 0;
+                bottom: 0;
                 display: flex;
-                flex-direction: column;
                 align-items: center;
                 justify-content: center;
+                color: white;
+                font-size: 0.75rem;
+                font-weight: 700;
+                letter-spacing: 0.5px;
+                transition: opacity 0.2s;
+                z-index: 1;
+                white-space: nowrap;
             }
+
+            /* Confines LOSSLESS to the empty space on the right */
+            .text-off {
+                left: 30px;
+                right: 0; 
+                opacity: 1;
+            }
+
+            /* Confines LOSSY to the empty space on the left */
+            .text-on {
+                left: 0;
+                right: 30px; 
+                opacity: 0;
+            }
+
+            .chunky-toggle input:checked + .toggle-track {
+                background-color: #b73229;
+            }
+
+            .chunky-toggle input:checked + .toggle-track .toggle-knob {
+                transform: translateX(72px); /* 110px total width - 32px knob - 6px padding = 72px */
+            }
+
+            .chunky-toggle input:checked + .toggle-track .text-off {
+                opacity: 0;
+            }
+
+            .chunky-toggle input:checked + .toggle-track .text-on {
+                opacity: 1;
+            }
+
+            /* ── Inputs & UI ── */
+            .upload-zone { border: 2px dashed var(--border); border-radius: var(--radius-sm); padding: 24px 16px; text-align: center; cursor: pointer; background: var(--surface2); transition: var(--transition); position: relative; overflow: hidden; min-height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
             .upload-zone:hover { border-color: var(--purple-light); background: rgba(139, 92, 246, 0.05); }
             .upload-zone.has-file { border-style: solid; border-color: var(--purple); }
-            
-            /* ── Tiny Clear "X" Buttons ─────────────── */
             .input-wrapper { position: relative; width: 100%; }
-            
-            .icon-clear {
-                position: absolute;
-                top: 10px;
-                right: 10px;
-                width: 26px;
-                height: 26px;
-                border-radius: 50%;
-                background: rgba(239, 68, 68, 0.15);
-                color: #fb7185;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 14px;
-                cursor: pointer;
-                z-index: 10;
-                opacity: 0; /* Hidden by default */
-                transition: all 0.2s ease;
-                pointer-events: none;
-                border: 1px solid rgba(239, 68, 68, 0.3);
-                backdrop-filter: blur(4px);
-            }
-            .icon-clear:hover {
-                background: rgba(239, 68, 68, 0.9);
-                color: white;
-                border-color: #ef4444;
-                transform: scale(1.1);
-            }
-            /* Show the clear button only when the area has content */
-            .upload-zone.has-file .icon-clear,
-            .input-wrapper.has-text .icon-clear {
-                opacity: 1;
-                pointer-events: auto;
-            }
-
-            .preview-img {
-                max-width: 100%;
-                max-height: 200px;
-                border-radius: 4px;
-                display: none;
-                margin-top: 10px;
-            }
-            .preview-img.visible { display: block; }
-            .upload-content.hidden { display: none; }
-
+            .icon-clear { position: absolute; top: 10px; right: 10px; width: 26px; height: 26px; border-radius: 50%; background: rgba(239, 68, 68, 0.15); color: #fb7185; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; z-index: 10; opacity: 0; transition: all 0.2s ease; pointer-events: none; border: 1px solid rgba(239, 68, 68, 0.3); backdrop-filter: blur(4px); }
+            .icon-clear:hover { background: rgba(239, 68, 68, 0.9); color: white; border-color: #ef4444; transform: scale(1.1); }
+            .upload-zone.has-file .icon-clear, .input-wrapper.has-text .icon-clear { opacity: 1; pointer-events: auto; }
+            .preview-img { max-width: 100%; max-height: 200px; border-radius: 4px; display: none; margin-top: 10px; }
+            .preview-img.visible { display: block; } .upload-content.hidden { display: none; }
             input[type="file"] { display: none; }
-
-            textarea {
-                width: 100%;
-                padding: 12px;
-                padding-right: 40px; /* Space for the clear button */
-                background: var(--surface2);
-                border: 1px solid var(--border);
-                border-radius: var(--radius-sm);
-                color: var(--text);
-                font-family: 'SF Mono', monospace;
-                resize: vertical;
-                min-height: 120px;
-            }
+            textarea { width: 100%; padding: 12px; padding-right: 40px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-family: 'SF Mono', monospace; resize: vertical; min-height: 120px; }
             textarea:focus { outline: none; border-color: var(--purple); }
-
-            .output-msg {
-                margin-top: 8px; padding: 12px; border-radius: var(--radius-sm);
-                font-size: 0.85rem; text-align: center; font-weight: 500; display: none;
-            }
+            .output-msg { margin-top: 8px; padding: 12px; border-radius: var(--radius-sm); font-size: 0.85rem; text-align: center; font-weight: 500; display: none; }
             .output-msg.visible { display: block; }
             .output-msg.success { background: rgba(16, 185, 129, 0.1); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
             .output-msg.error { background: rgba(239, 68, 68, 0.1); color: #fb7185; border: 1px solid rgba(239, 68, 68, 0.3); }
             .output-msg.info { background: rgba(139, 92, 246, 0.1); color: #c4b5fd; border: 1px solid rgba(139, 92, 246, 0.3); }
         </style>
+        
+        <script src="script.js" defer></script>
     </head>
     <body>
-
-        <!-- ═══════ TOP WAVE TABS ═══════ -->
         <div class="top-bar-container" id="topBarContainer">
             <svg style="position:absolute; width:0; height:0;" aria-hidden="true">
                 <defs>
@@ -348,47 +186,39 @@
         </div>
 
         <div class="workspace">
-            
-            <!-- 🟦 LEFT PANEL: Inputs & Extracted Results -->
             <div class="panel">
                 <div class="panel-title">1. Source & Secret 🕵️‍♂️</div>
-                
                 <div>
                     <label style="font-size: 0.85rem; color: var(--muted); display: block; margin-bottom: 8px;">Cover Image</label>
-                    <div class="upload-zone" id="coverZone" onclick="document.getElementById('coverInput').click()">
-                        <div class="icon-clear" onclick="event.stopPropagation(); clearField('cover')" title="Remove Image">✕</div>
+                    <div class="upload-zone" id="coverZone">
+                        <div class="icon-clear" id="clearCoverBtn" title="Remove Image">✕</div>
                         <div class="upload-content" id="coverContent">
                             <span style="font-size: 2rem;">🏞️</span>
                             <div style="font-size: 0.85rem; margin-top: 8px;">Click to upload cover image</div>
                         </div>
                         <img id="coverPreview" class="preview-img">
                     </div>
-                    <input type="file" id="coverInput" accept="image/*" onchange="handleFileSelect('coverInput', 'coverZone', 'coverContent', 'coverPreview', 'cover')">
+                    <input type="file" id="coverInput" accept="image/*">
                 </div>
 
                 <div>
                     <label style="font-size: 0.85rem; color: var(--muted); display: block; margin-bottom: 8px;">Secret Data</label>
-
-                    <!-- Text Input -->
                     <div class="input-wrapper" id="textWrapper">
-                        <div class="icon-clear" onclick="clearField('text')" title="Clear Text">✕</div>
-                        <textarea id="secretTextInput" oninput="toggleTextClear()" placeholder="Type secret message here (ASCII)..."></textarea>
+                        <div class="icon-clear" id="clearTextBtn" title="Clear Text">✕</div>
+                        <textarea id="secretTextInput" placeholder="Type secret message here (ASCII)..."></textarea>
                     </div>
-                    
-                    <!-- Image Input (Hidden by default) -->
-                    <div class="upload-zone" id="secretImgZone" style="display: none;" onclick="document.getElementById('secretImgInput').click()">
-                        <div class="icon-clear" onclick="event.stopPropagation(); clearField('secretImg')" title="Remove Image">✕</div>
+                    <div class="upload-zone" id="secretImgZone" style="display: none;">
+                        <div class="icon-clear" id="clearSecretImgBtn" title="Remove Image">✕</div>
                         <div class="upload-content" id="secretImgContent">
                             <span style="font-size: 2rem;">🖼️</span>
                             <div style="font-size: 0.85rem; margin-top: 8px;">Click to upload secret image</div>
                         </div>
                         <img id="secretImgPreview" class="preview-img">
                     </div>
-                    <input type="file" id="secretImgInput" accept="image/*" onchange="handleFileSelect('secretImgInput', 'secretImgZone', 'secretImgContent', 'secretImgPreview', 'secret')">
+                    <input type="file" id="secretImgInput" accept="image/*">
                 </div>
             </div>
 
-            <!-- 🟨 CENTER PANEL: Controls -->
             <div class="center-actions">
                 <div class="settings-box">
                     <div class="settings-row">
@@ -399,7 +229,6 @@
                         </select>
                     </div>
                     
-                    <!-- String Repetition Toggle -->
                     <div class="settings-row" id="stringRepGroup">
                         <label class="checkbox-group">
                             <input type="checkbox" id="stringRep">
@@ -407,359 +236,41 @@
                             <span style="font-size: 0.9rem;">String Repetition</span>
                         </label>
                     </div>
+
+                    <div class="settings-row" id="imageModeGroup" style="display: none;">
+                        <span style="font-size: 0.9rem;">Format:&nbsp;</span>
+                        <label class="chunky-toggle" title="Toggle between Lossless (default) and Lossy compression">
+                            <input type="checkbox" id="lossyToggle">
+                            <span class="toggle-track">
+                                <span class="toggle-text text-off">LOSSLESS</span>
+                                <span class="toggle-text text-on">LOSSY</span>
+                                <span class="toggle-knob"></span>
+                            </span>
+                        </label>
+                    </div>
                 </div>
 
-                <button class="btn btn-embed" onclick="performEmbed()">Embed ➡️</button>
-                <button class="btn btn-extract" onclick="performExtract()">⬅️ Extract</button>
-                
+                <button class="btn btn-embed" id="embedBtn">Embed ➡️</button>
+                <button class="btn btn-extract" id="extractBtn">⬅️ Extract</button>
                 <div id="statusMsg" class="output-msg"></div>
             </div>
 
-            <!-- 🟥 RIGHT PANEL: Stego Result / Extraction Input -->
             <div class="panel">
                 <div class="panel-title">2. Stego Image 🔐</div>
-                
                 <p style="font-size: 0.85rem; color: var(--muted); line-height: 1.4;">
                     Embedding will display the result here. To extract, upload an existing stego image here.
                 </p>
-
-                <div class="upload-zone" id="stegoZone" onclick="document.getElementById('stegoInput').click()" style="flex-grow: 1;">
-                    <div class="icon-clear" onclick="event.stopPropagation(); clearField('stego')" title="Remove Image">✕</div>
+                <div class="upload-zone" id="stegoZone" style="flex-grow: 1;">
+                    <div class="icon-clear" id="clearStegoBtn" title="Remove Image">✕</div>
                     <div class="upload-content" id="stegoContent">
                         <span style="font-size: 2rem;">📥</span>
                         <div style="font-size: 0.85rem; margin-top: 8px;">Upload stego image or view result</div>
                     </div>
                     <img id="stegoPreview" class="preview-img">
                 </div>
-                <input type="file" id="stegoInput" accept="image/*" onchange="handleFileSelect('stegoInput', 'stegoZone', 'stegoContent', 'stegoPreview', 'stego')">
-                
-                <button id="downloadBtn" class="btn" style="background: var(--surface2); display: none; margin-top: -10px;" onclick="downloadStego()">💾 Save Result</button>
+                <input type="file" id="stegoInput" accept="image/*">
+                <button id="downloadBtn" class="btn" style="background: var(--surface2); display: none; margin-top: -10px;">💾 Save Result</button>
             </div>
-
         </div>
-
-        <script>
-            // ── Wave clip paths logic ────────────────
-            function updateClip() {
-                const w = window.innerWidth;
-                document.getElementById('barClipPath').setAttribute('d',
-                    `M 0 0 L ${w} 0 L ${w} 5 L ${Math.trunc(w/2)} 5 A 25 25 0 0 0 ${Math.trunc(w/2) - 25} 30 A 25 25 0 0 1 ${Math.trunc(w/2) - 50} 55 L 50 55 A 25 25 0 0 1 25 30 A 25 25 0 0 0 0 5 Z`
-                );
-                document.getElementById('barClipPath2').setAttribute('d',
-                    `M 0 0 L ${w} 0 L ${w} 5 A 25 25 0 0 0 ${w - 25} 30 A 25 25 0 0 1 ${w - 50} 55 L ${Math.trunc(w/2) + 50} 55 A 25 25 0 0 1 ${Math.trunc(w/2) + 25} 30 A 25 25 0 0 0 ${Math.trunc(w/2)} 5 L 0 5 Z`
-                );
-            }
-            window.addEventListener('resize', updateClip);
-            updateClip();
-
-            // ── Global State ─────────────────────────
-            let currentMode = 'text'; 
-            let files = {
-                cover: null,
-                secret: null,
-                stego: null 
-            };
-            let stegoBlobUrl = null;
-
-            // ── Mode Switching (Wave Bars) ───────────
-            const barLeft = document.getElementById('barLeft');
-            const barRight = document.getElementById('barRight');
-
-            function setMode(mode) {
-                currentMode = mode;
-                barLeft.classList.toggle('active', mode === 'text');
-                barRight.classList.toggle('active', mode === 'image');
-                
-                document.getElementById('textWrapper').style.display = mode === 'text' ? 'block' : 'none';
-                document.getElementById('secretImgZone').style.display = mode === 'image' ? 'flex' : 'none';
-                document.getElementById('stringRepGroup').style.display = mode === 'text' ? 'flex' : 'none';
-            }
-
-            barLeft.addEventListener('click', () => setMode('text'));
-            barRight.addEventListener('click', () => setMode('image'));
-            setMode('text');
-
-            // ── UI Interactions ──────────────────────
-            function showMessage(text, type) {
-                const msgBox = document.getElementById('statusMsg');
-                msgBox.textContent = text;
-                msgBox.className = `output-msg visible ${type}`;
-            }
-
-            function toggleTextClear() {
-                const val = document.getElementById('secretTextInput').value;
-                const wrapper = document.getElementById('textWrapper');
-                if(val.length > 0) {
-                    wrapper.classList.add('has-text');
-                } else {
-                    wrapper.classList.remove('has-text');
-                }
-            }
-
-            function clearField(field) {
-                if (field === 'cover') {
-                    files.cover = null;
-                    document.getElementById('coverInput').value = '';
-                    document.getElementById('coverZone').classList.remove('has-file');
-                    document.getElementById('coverContent').classList.remove('hidden');
-                    const prev = document.getElementById('coverPreview');
-                    prev.src = ''; prev.classList.remove('visible');
-                } else if (field === 'text') {
-                    document.getElementById('secretTextInput').value = '';
-                    toggleTextClear();
-                } else if (field === 'secretImg') {
-                    files.secret = null;
-                    document.getElementById('secretImgInput').value = '';
-                    document.getElementById('secretImgZone').classList.remove('has-file');
-                    document.getElementById('secretImgContent').classList.remove('hidden');
-                    const prev = document.getElementById('secretImgPreview');
-                    prev.src = ''; prev.classList.remove('visible');
-                } else if (field === 'stego') {
-                    files.stego = null;
-                    if (stegoBlobUrl) URL.revokeObjectURL(stegoBlobUrl);
-                    stegoBlobUrl = null;
-                    document.getElementById('stegoInput').value = '';
-                    document.getElementById('stegoZone').classList.remove('has-file');
-                    document.getElementById('stegoContent').classList.remove('hidden');
-                    const prev = document.getElementById('stegoPreview');
-                    prev.src = ''; prev.classList.remove('visible');
-                    document.getElementById('downloadBtn').style.display = 'none';
-                }
-                document.getElementById('statusMsg').className = 'output-msg';
-            }
-
-            function handleFileSelect(inputId, zoneId, contentId, previewId, fileKey) {
-                const file = document.getElementById(inputId).files[0];
-                if (!file) return;
-
-                files[fileKey] = file;
-                const zone = document.getElementById(zoneId);
-                const content = document.getElementById(contentId);
-                const preview = document.getElementById(previewId);
-
-                zone.classList.add('has-file');
-                content.classList.add('hidden');
-                preview.src = URL.createObjectURL(file);
-                preview.classList.add('visible');
-
-                if (fileKey === 'stego') {
-                    document.getElementById('downloadBtn').style.display = 'none';
-                    showMessage('Stego image loaded for extraction.', 'info');
-                }
-            }
-
-            function downloadStego() {
-                if (!stegoBlobUrl) return;
-                const a = document.createElement('a');
-                a.href = stegoBlobUrl;
-                a.download = 'stego_result.png';
-                a.click();
-            }
-
-            // ── Core Utilities ───────────────────────
-            function embPixels(x, y) {
-                x -= 2; y -= 2;
-                if (x < 0 || y < 0) return 0;
-                return (x * y + (x & 1) * (y & 1)) >> 1;
-            }
-
-            function loadImage(fileOrBlob) {
-                return new Promise((resolve, reject) => {
-                    const img = new Image();
-                    img.onload = () => resolve(img);
-                    img.onerror = reject;
-                    img.src = fileOrBlob instanceof Blob ? URL.createObjectURL(fileOrBlob) : fileOrBlob;
-                });
-            }
-
-            // ── Embedding Logic ──────────────────────
-            async function performEmbed() {
-                if (!files.cover) { showMessage('❌ Upload a Cover Image first.', 'error'); return; }
-                const depth = parseInt(document.getElementById('embedDepth').value);
-                
-                try {
-                    const coverImg = await loadImage(files.cover);
-                    const canvas = document.createElement('canvas');
-                    canvas.width = coverImg.width; canvas.height = coverImg.height;
-                    const ctx = canvas.getContext('2d', { willReadFrequently: true });
-                    ctx.drawImage(coverImg, 0, 0);
-                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                    const pixels = imageData.data;
-                    const capacityBits = embPixels(coverImg.width, coverImg.height) * depth;
-
-                    if (currentMode === 'text') {
-                        const message = document.getElementById('secretTextInput').value;
-                        if (!message) { showMessage('❌ Enter a secret message.', 'error'); return; }
-                        const msgBytes = new TextEncoder().encode(message);
-                        
-                        const repeatString = document.getElementById('stringRep').checked;
-                        const msgBitLength = msgBytes.length * 8;
-                        const targetBits = repeatString ? capacityBits : msgBitLength;
-
-                        if (!repeatString && capacityBits < msgBitLength) {
-                            showMessage(`❌ Cover image too small for this text.`, 'error'); return;
-                        }
-
-                        let bitIdx = 0;
-                        outer: for (let y=2; y<coverImg.height; y++) {
-                            for (let x=2; x<coverImg.width; x++) {
-                                if (bitIdx >= targetBits) break outer;
-                                const pxIdx = (y*coverImg.width + x)*4;
-                                
-                                for (let d=0; d<depth && bitIdx<targetBits; d++) {
-                                    const effectiveBitIdx = repeatString ? (bitIdx % msgBitLength) : bitIdx;
-                                    const byteVal = msgBytes[Math.floor(effectiveBitIdx/8)];
-                                    const bit = (byteVal >> (7 - (effectiveBitIdx%8))) & 1;
-                                    
-                                    pixels[pxIdx+2] = (pixels[pxIdx+2] & ~1) | bit;
-                                    bitIdx++;
-                                }
-                            }
-                        }
-                    } else {
-                        if (!files.secret) { showMessage('❌ Upload a Secret Image.', 'error'); return; }
-                        const secretImg = await loadImage(files.secret);
-                        
-                        const maxPixels = Math.floor(capacityBits / 32);
-                        let sw = secretImg.width, sh = secretImg.height;
-                        if (sw * sh > maxPixels) {
-                            const scale = Math.sqrt(maxPixels / (sw*sh));
-                            sw = Math.max(1, Math.floor(sw * scale));
-                            sh = Math.max(1, Math.floor(sh * scale));
-                        }
-                        
-                        const secCanvas = document.createElement('canvas');
-                        secCanvas.width = sw; secCanvas.height = sh;
-                        const sctx = secCanvas.getContext('2d', { willReadFrequently: true });
-                        sctx.drawImage(secretImg, 0, 0, sw, sh);
-                        const secPixels = sctx.getImageData(0,0,sw,sh).data;
-                        const totalBits = 32 + sw*sh*32;
-                        
-                        if (capacityBits < totalBits) { showMessage(`❌ Cover image too small.`, 'error'); return; }
-                        
-                        const bits = [];
-                        for (let i=15; i>=0; i--) bits.push((sw >> i) & 1);
-                        for (let i=15; i>=0; i--) bits.push((sh >> i) & 1);
-                        for (let i=0; i<secPixels.length; i++) {
-                            const b = secPixels[i];
-                            for (let j=7; j>=0; j--) bits.push((b >> j) & 1);
-                        }
-                        
-                        let bitIdx = 0;
-                        outer: for (let y=2; y<coverImg.height; y++) {
-                            for (let x=2; x<coverImg.width; x++) {
-                                if (bitIdx >= totalBits) break outer;
-                                const pxIdx = (y*coverImg.width + x)*4;
-                                for (let d=0; d<depth && bitIdx<totalBits; d++) {
-                                    pixels[pxIdx+2] = (pixels[pxIdx+2] & ~1) | bits[bitIdx];
-                                    bitIdx++;
-                                }
-                            }
-                        }
-                    }
-
-                    ctx.putImageData(imageData, 0, 0);
-                    canvas.toBlob(blob => {
-                        if(stegoBlobUrl) URL.revokeObjectURL(stegoBlobUrl);
-                        stegoBlobUrl = URL.createObjectURL(blob);
-                        files.stego = blob;
-                        
-                        const preview = document.getElementById('stegoPreview');
-                        preview.src = stegoBlobUrl;
-                        preview.classList.add('visible');
-                        document.getElementById('stegoContent').classList.add('hidden');
-                        document.getElementById('stegoZone').classList.add('has-file');
-                        document.getElementById('downloadBtn').style.display = 'block';
-                        
-                        showMessage('✅ Embedding successful!', 'success');
-                    }, 'image/png');
-
-                } catch (e) {
-                    console.error(e); showMessage('❌ Embedding failed.', 'error');
-                }
-            }
-
-            // ── Extraction Logic ─────────────────────
-            async function performExtract() {
-                if (!files.stego) { showMessage('❌ No stego image to extract from.', 'error'); return; }
-                const depth = parseInt(document.getElementById('embedDepth').value);
-                
-                try {
-                    const img = await loadImage(files.stego);
-                    const canvas = document.createElement('canvas');
-                    canvas.width = img.width; canvas.height = img.height;
-                    const ctx = canvas.getContext('2d', { willReadFrequently: true });
-                    ctx.drawImage(img, 0, 0);
-                    const pixels = ctx.getImageData(0,0,img.width,img.height).data;
-                    const capacityBits = embPixels(img.width, img.height) * depth;
-                    
-                    const bits = [];
-                    outer: for (let y=2; y<img.height; y++) {
-                        for (let x=2; x<img.width; x++) {
-                            if (bits.length >= capacityBits) break outer;
-                            const pxIdx = (y*img.width + x)*4;
-                            for (let d=0; d<depth && bits.length<capacityBits; d++) {
-                                bits.push(pixels[pxIdx+2] & 1);
-                            }
-                        }
-                    }
-
-                    if (currentMode === 'text') {
-                        const bytes = [];
-                        for (let i=0; i+8<=bits.length; i+=8) {
-                            let byte = 0;
-                            for (let j=0; j<8; j++) byte = (byte<<1) | bits[i+j];
-                            bytes.push(byte);
-                        }
-                        while (bytes.length && bytes[bytes.length-1]===0) bytes.pop();
-                        const msg = new TextDecoder().decode(new Uint8Array(bytes));
-                        
-                        if (msg.length && /^[\x20-\x7E\s\n]*$/.test(msg)) {
-                            document.getElementById('secretTextInput').value = msg;
-                            toggleTextClear(); // Show the 'X' button
-                            showMessage('✅ Secret text extracted successfully!', 'success');
-                        } else {
-                            showMessage('⚠️ No readable text found at this depth.', 'info');
-                        }
-                    } else {
-                        if (bits.length < 32) { showMessage('❌ Not enough data.', 'error'); return; }
-                        let sw=0, sh=0;
-                        for (let i=0; i<16; i++) sw = (sw<<1) | bits[i];
-                        for (let i=16; i<32; i++) sh = (sh<<1) | bits[i];
-                        
-                        const needed = 32 + sw*sh*32;
-                        if (bits.length < needed || sw <= 0 || sh <= 0 || sw > 5000 || sh > 5000) { 
-                            showMessage('❌ Invalid or corrupted image data.', 'error'); return; 
-                        }
-                        
-                        const pixelsOut = new Uint8ClampedArray(sw*sh*4);
-                        let idx = 32;
-                        for (let i=0; i<sw*sh*4; i++) {
-                            let byte = 0;
-                            for (let b=0; b<8; b++) byte = (byte<<1) | bits[idx++];
-                            pixelsOut[i] = byte;
-                        }
-                        
-                        const outCanvas = document.createElement('canvas');
-                        outCanvas.width = sw; outCanvas.height = sh;
-                        const outCtx = outCanvas.getContext('2d');
-                        const outImgData = outCtx.createImageData(sw, sh);
-                        outImgData.data.set(pixelsOut);
-                        outCtx.putImageData(outImgData, 0, 0);
-                        
-                        outCanvas.toBlob(blob => {
-                            const prev = document.getElementById('secretImgPreview');
-                            prev.src = URL.createObjectURL(blob);
-                            prev.classList.add('visible');
-                            document.getElementById('secretImgContent').classList.add('hidden');
-                            document.getElementById('secretImgZone').classList.add('has-file');
-                            showMessage('✅ Secret image extracted successfully!', 'success');
-                        }, 'image/png');
-                    }
-                } catch (e) {
-                    console.error(e); showMessage('❌ Extraction failed.', 'error');
-                }
-            }
-        </script>
     </body>
 </html>
