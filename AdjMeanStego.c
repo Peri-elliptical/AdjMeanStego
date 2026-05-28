@@ -8,7 +8,12 @@ uint8_t* create_buffer(int width, int height) {
 }
 
 EMSCRIPTEN_KEEPALIVE
-void process_stego(uint8_t* img_data, int width, int height, const char* message, int msg_len, int emb_depth, bool string_rep) {
+void free_buffer(void* ptr) {
+    free(ptr);
+}
+
+EMSCRIPTEN_KEEPALIVE
+void text_embed(uint8_t* img_data, int width, int height, const char* message, int msg_len, int emb_depth, int string_rep) {
     if (msg_len > 0) {
         for (int y = 1; y < height - 1; y++) {
             for (int x = 1; x < width - 1; x++) {

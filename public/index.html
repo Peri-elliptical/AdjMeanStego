@@ -28,7 +28,7 @@
             .bar2 { clip-path: url(#barClip2); background: linear-gradient(180deg, #4b0082, #9370db); }
             .bar.active, .bar2.active { filter: brightness(1.3) drop-shadow(0 0 8px rgba(180,130,255,0.6)); background: linear-gradient(180deg, #6d28d9, #a78bfa); z-index: 1; }
             .bar-label { position: absolute; top: 50%; transform: translate(-50%, -50%); font-weight: 700; font-size: 0.9rem; color: rgba(255,255,255,0.85); pointer-events: none; text-shadow: 0 1px 4px rgba(0,0,0,0.5); letter-spacing: 0.03em; z-index: 5; }
-            .label-left { left: 25%; } .label-right { right: 25%; }
+            .label-left { left: 25%; } .label-right { left: 75%; }
 
             /* ── Header & Layout ── */
             .header { text-align: center; margin-bottom: 40px; }
@@ -59,90 +59,16 @@
             #downloadBtn:hover { background: #7c3aed !important; box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6); }
 
             /* ── Chunky Toggle Switch (Lossy/Lossless) ── */
-            .chunky-toggle {
-                position: relative;
-                display: inline-block;
-                height: 34px;
-                width: 110px; 
-                cursor: pointer;
-            }
-
-            .chunky-toggle input {
-                opacity: 0;
-                width: 0;
-                height: 0;
-                position: absolute;
-            }
-
-            .toggle-track {
-                position: absolute;
-                top: 0; left: 0; right: 0; bottom: 0;
-                background-color: #5cb85c;
-                border-radius: 8px;
-                transition: background-color 0.3s;
-                box-shadow: inset 0 0 0 1px rgba(0,0,0,0.2);
-                overflow: hidden;
-            }
-
-            .toggle-knob {
-                position: absolute;
-                height: 28px;
-                width: 32px;
-                left: 3px;
-                bottom: 3px;
-                background-color: white;
-                border-radius: 6px;
-                transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
-                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-                z-index: 2;
-            }
-
-            /* ── The Fix: Perfect Flexbox Centering ── */
-            .toggle-text {
-                position: absolute;
-                top: 0;
-                bottom: 0;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: white;
-                font-size: 0.75rem;
-                font-weight: 700;
-                letter-spacing: 0.5px;
-                transition: opacity 0.2s;
-                z-index: 1;
-                white-space: nowrap;
-            }
-
-            /* Confines LOSSLESS to the empty space on the right */
-            .text-off {
-                left: 30px;
-                right: 0; 
-                opacity: 1;
-            }
-
-            /* Confines LOSSY to the empty space on the left */
-            .text-on {
-                left: 0;
-                right: 30px; 
-                opacity: 0;
-            }
-
-            .chunky-toggle input:checked + .toggle-track {
-                background-color: #b73229;
-            }
-
-            .chunky-toggle input:checked + .toggle-track .toggle-knob {
-                transform: translateX(72px); /* 110px total width - 32px knob - 6px padding = 72px */
-            }
-
-            .chunky-toggle input:checked + .toggle-track .text-off {
-                opacity: 0;
-            }
-
-            .chunky-toggle input:checked + .toggle-track .text-on {
-                opacity: 1;
-            }
+            .chunky-toggle { position: relative; display: inline-block; height: 34px; width: 110px; cursor: pointer; }
+            .chunky-toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+            .toggle-track { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: #5cb85c; border-radius: 8px; transition: background-color 0.3s; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.2); overflow: hidden; }
+            .toggle-knob { position: absolute; height: 28px; width: 32px; left: 3px; bottom: 3px; background-color: white; border-radius: 6px; transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1); box-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 2; }
+            .toggle-text { position: absolute; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px; transition: opacity 0.2s; z-index: 1; white-space: nowrap; }
+            .text-off { left: 35px; right: 0; opacity: 1; } .text-on { left: 0; right: 35px; opacity: 0; }
+            .chunky-toggle input:checked + .toggle-track { background-color: #b73229; }
+            .chunky-toggle input:checked + .toggle-track .toggle-knob { transform: translateX(72px); }
+            .chunky-toggle input:checked + .toggle-track .text-off { opacity: 0; }
+            .chunky-toggle input:checked + .toggle-track .text-on { opacity: 1; }
 
             /* ── Inputs & UI ── */
             .upload-zone { border: 2px dashed var(--border); border-radius: var(--radius-sm); padding: 24px 16px; text-align: center; cursor: pointer; background: var(--surface2); transition: var(--transition); position: relative; overflow: hidden; min-height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
