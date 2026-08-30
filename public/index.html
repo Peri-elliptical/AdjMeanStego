@@ -193,15 +193,21 @@
                     </div>
 
                     <div class="settings-row" id="imageModeGroup" style="display: none;">
-                        <label for="lossyToggle" style="font-size: 0.9rem;">Format:&nbsp;</label>
-                        <span class="chunky-toggle" title="Toggle between Lossless (default) and Lossy compression">
-                            <input type="checkbox" id="lossyToggle" role="switch" aria-checked="false">
-                            <span class="toggle-track" aria-hidden="true">
-                                <span class="toggle-text text-off">LOSSLESS</span>
-                                <span class="toggle-text text-on">LOSSY</span>
-                                <span class="toggle-knob"></span>
-                            </span>
-                        </label>
+                        <span style="font-size: 0.9rem;">Method:&nbsp;</span>
+                        <div class="method-select" role="radiogroup" aria-label="Embedding method">
+                            <label class="method-option">
+                                <input type="radio" name="embedMethod" value="compact" checked>
+                                <span>Compact</span>
+                            </label>
+                            <label class="method-option">
+                                <input type="radio" name="embedMethod" value="spread">
+                                <span>Spread</span>
+                            </label>
+                            <label class="method-option">
+                                <input type="radio" name="embedMethod" value="lossless">
+                                <span>Lossless</span>
+                            </label>
+                        </div>
                     </div>
                 </div>
 
