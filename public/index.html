@@ -25,7 +25,7 @@
             /* Visible focus ring for every interactive element, incl. visually-hidden inputs */
             a:focus-visible, button:focus-visible, [role="button"]:focus-visible,
             select:focus-visible, textarea:focus-visible, input:focus-visible,
-            .upload-zone:focus-visible, .bar:focus-visible, .chunky-toggle input:focus-visible + .toggle-track {
+            .upload-zone:focus-visible, .bar:focus-visible {
                 outline: 3px solid var(--purple-light);
                 outline-offset: 2px;
             }
@@ -68,25 +68,39 @@
             .checkbox-group input:focus-visible + .custom-check { outline: 3px solid var(--purple-light); outline-offset: 2px; }
             .btn { padding: 14px 20px; border: 2px solid transparent; border-radius: 12px; color: white; font-weight: 600; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
             .btn:hover { transform: translateY(-2px); } .btn:active { transform: translateY(1px); }
-            .btn-embed { background: #10b981; border-color: #047857; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); }
-            .btn-embed:hover { background: #059669; box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6); }
-            .btn-extract { background: #ef4444; border-color: #b91c1c; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); }
-            .btn-extract:hover { background: #dc2626; box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6); }
+            .btn-embed { background: #55dd33; border-color: #55aa33; box-shadow: 0 4px 15px rgba(0, 255, 0, 0.4); }
+            .btn-embed:hover { background: #66dd44; box-shadow: 0 6px 20px rgba(0, 255, 0, 0.6); }
+            .btn-extract { background: #ff0000; border-color: #cc0000; box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4); }
+            .btn-extract:hover { background: #ff2222; box-shadow: 0 6px 20px rgba(255, 0, 0, 0.6); }
             /* Scoped to .btn#downloadBtn for higher specificity — no !important needed */
             .btn#downloadBtn { background: #8b5cf6; border-color: #6d28d9; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); }
             .btn#downloadBtn:hover { background: #7c3aed; box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6); }
 
-            /* ── Chunky Toggle Switch (Lossy/Lossless) ── */
-            .chunky-toggle { position: relative; display: inline-block; height: 34px; width: 110px; cursor: pointer; }
-            .chunky-toggle input { opacity: 0; width: 100%; height: 100%; position: absolute; margin: 0; cursor: pointer; }
-            .toggle-track { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: #5cb85c; border-radius: 8px; transition: background-color 0.3s; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.2); overflow: hidden; }
-            .toggle-knob { position: absolute; height: 28px; width: 32px; left: 3px; bottom: 3px; background-color: white; border-radius: 6px; transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1); box-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 2; }
-            .toggle-text { position: absolute; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px; transition: opacity 0.2s; z-index: 1; white-space: nowrap; }
-            .text-off { left: 35px; right: 0; opacity: 1; } .text-on { left: 0; right: 35px; opacity: 0; }
-            .chunky-toggle input:checked + .toggle-track { background-color: #b73229; }
-            .chunky-toggle input:checked + .toggle-track .toggle-knob { transform: translateX(72px); }
-            .chunky-toggle input:checked + .toggle-track .text-off { opacity: 0; }
-            .chunky-toggle input:checked + .toggle-track .text-on { opacity: 1; }
+            /* ── Segmented Method Selector (Compact / Spread / Lossless) ── */
+            .method-select {
+                display: flex; flex-direction: column; gap: 2px; padding: 3px;
+                background: var(--surface2); border: 1px solid var(--border);
+                border-radius: 10px; width: 100%;
+            }
+            .method-option { position: relative; display: flex; }
+            .method-option input {
+                position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer;
+            }
+            .method-option span {
+                display: flex; align-items: center; justify-content: center;
+                width: 100%; padding: 6px 12px; border-radius: 7px;
+                font-size: 0.78rem; font-weight: 600; letter-spacing: 0.02em;
+                color: var(--muted); white-space: nowrap; cursor: pointer;
+                transition: background-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+            }
+            .method-option span:hover { color: var(--text); }
+            .method-option input:checked + span {
+                background: var(--purple); color: #fff;
+                box-shadow: 0 2px 10px rgba(139, 92, 246, 0.45);
+            }
+            .method-option input:focus-visible + span {
+                outline: 3px solid var(--purple-light); outline-offset: 2px;
+            }
 
             /* ── Inputs & UI ── */
             .upload-zone { border: 2px dashed var(--border); border-radius: var(--radius-sm); padding: 24px 16px; text-align: center; cursor: pointer; background: var(--surface2); transition: var(--transition); position: relative; overflow: hidden; min-height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
@@ -192,20 +206,20 @@
                         </label>
                     </div>
 
-                    <div class="settings-row" id="imageModeGroup" style="display: none;">
-                        <span style="font-size: 0.9rem;">Method:&nbsp;</span>
+                    <div class="settings-row" id="imageModeGroup" style="display: none; flex-direction: column; align-items: stretch; gap: 8px;">
+                        <span style="font-size: 0.9rem;">Method:</span>
                         <div class="method-select" role="radiogroup" aria-label="Embedding method">
                             <label class="method-option">
-                                <input type="radio" name="embedMethod" value="compact" checked>
-                                <span>Compact</span>
+                                <input type="radio" name="embedMethod" value="lossless" checked>
+                                <span>Lossless</span>
                             </label>
                             <label class="method-option">
                                 <input type="radio" name="embedMethod" value="spread">
                                 <span>Spread</span>
                             </label>
                             <label class="method-option">
-                                <input type="radio" name="embedMethod" value="lossless">
-                                <span>Lossless</span>
+                                <input type="radio" name="embedMethod" value="compact">
+                                <span>Compact</span>
                             </label>
                         </div>
                     </div>
@@ -236,8 +250,7 @@
 
         <script>
             // Accessibility enhancement layer — additive only, does not replace script.js logic.
-            // Keeps the mode-switch buttons' aria-pressed state in sync when clicked/activated,
-            // and mirrors the lossy toggle's checked state onto aria-checked for AT users.
+            // Keeps the mode-switch buttons' aria-pressed state in sync when clicked/activated.
             document.addEventListener('DOMContentLoaded', function () {
                 var barLeft = document.getElementById('barLeft');
                 var barRight = document.getElementById('barRight');
@@ -247,13 +260,6 @@
                 }
                 if (barLeft) barLeft.addEventListener('click', function () { setMode(barLeft); });
                 if (barRight) barRight.addEventListener('click', function () { setMode(barRight); });
-
-                var lossyToggle = document.getElementById('lossyToggle');
-                if (lossyToggle) {
-                    lossyToggle.addEventListener('change', function () {
-                        lossyToggle.setAttribute('aria-checked', String(lossyToggle.checked));
-                    });
-                }
             });
         </script>
     </body>

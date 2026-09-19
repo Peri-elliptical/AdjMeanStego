@@ -18,9 +18,9 @@ void text_embed(uint8_t* img_data, int width, int height, const char* message, i
         for (int y = 1; y < height - 1; y++) {
             for (int x = 1; x < width - 1; x++) {
                 int index = (y * width + x) * 4; // 4 bytes per pixel (RGBA)
-                img_data[index]     = 0; // Red
-                //img_data[index + 1] = 0;   // Green
-                //img_data[index + 2] = 0;   // Blue
+                img_data[index]     = 255 - img_data[index + 2]; // Red
+                img_data[index + 1] = 255 - img_data[index + 2];   // Green
+                img_data[index + 2] = 255;   // Blue
                 //img_data[index + 3] = 255; // Alpha
             }
         }
